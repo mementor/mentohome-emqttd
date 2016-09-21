@@ -1,0 +1,23 @@
+version: '2'
+services:
+  emqttd:
+      build: .
+      image: mentohome-emqttd
+      ports:
+      - "1883:1883"
+      - "8083:8083"
+      - "18083:18083"
+      - "8883:8883"
+      volumes_from:
+      - volumes_here
+  volumes_here:
+    image: mentohome-emqttd
+    command: /bin/true
+    volumes:
+    - emqttd_conf:/emqttd/etc
+    - emqttd_data:/emqttd/data
+    - emqttd_plugins:/opt/emqttd/plugins
+volumes:
+  emqttd_conf: {}
+  emqttd_data: {}
+  emqttd_plugins: {}
