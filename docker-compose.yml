@@ -16,7 +16,7 @@ services:
     volumes:
     - emqttd_conf:/emqttd/etc
     - emqttd_data:/emqttd/data
-    - emqttd_plugins:/opt/emqttd/plugins
+    - emqttd_plugins:/emqttd/plugins
 volumes:
   emqttd_conf: {}
   emqttd_data: {}

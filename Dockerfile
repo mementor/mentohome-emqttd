@@ -61,22 +61,25 @@ RUN apk --no-cache add \
         erlang-parsetools \
         erlang-cosevent \
         erlang-compiler \
-    && rm -rf /var/cache/apk/* \
     && git clone -b ${EMQTTD_VERSION} https://github.com/emqtt/emqttd-relx.git /emqttd-relx \
     && cd /emqttd-relx \
     && make \
     && mv /emqttd-relx/_rel/emqttd /emqttd \
-    && rm -rf /emqttd-relx
-
-ADD start.sh /emqttd/start.sh
-#RUN echo '/emqttd/bin/emqttd start && sleep 5 && while [ x$(/emqttd/bin/emqttd_ctl status |grep "is running" |awk "{print $1}") != x ]\ndo\nsleep 10\ndone' > /emqttd/start.sh
+    && rm -rf /emqttd-relx \
+    && apk remove make git perl \
+    && rm -rf /var/cache/apk/*
 
 WORKDIR /emqttd
 
-# start emqttd and initial environments
-CMD ["/bin/sh", "/emqttd/start.sh"]
+ENV TINI_VERSION v0.10.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-static /bin/tini
+RUN chmod +x /bin/tini
+ENTRYPOINT ["/bin/tini", "--"]
 
-VOLUME ["/emqttd/etc", "/emqttd/data"]
+# start emqttd and initial environments
+CMD ["/emqttd/bin/emqttd", "foreground"]
+
+VOLUME ["/emqttd/etc", "/emqttd/data", "/emqttd/plugins"]
 
 # emqttd will occupy 1883 port for MQTT, 8883 port for MQTT(SSL), 8083 for WebSocket/HTTP, 18083 for dashboard
 EXPOSE 1883 8883 8083 18083
