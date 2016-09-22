@@ -11,6 +11,7 @@ services:
       volumes_from:
       - volumes_here
   volumes_here:
+    build: .
     image: mentohome-emqttd
     command: /bin/true
     volumes:

@@ -66,7 +66,7 @@ RUN apk --no-cache add \
     && make \
     && mv /emqttd-relx/_rel/emqttd /emqttd \
     && rm -rf /emqttd-relx \
-    && apk remove make git perl \
+    && apk del make git perl \
     && rm -rf /var/cache/apk/*
 
 WORKDIR /emqttd
